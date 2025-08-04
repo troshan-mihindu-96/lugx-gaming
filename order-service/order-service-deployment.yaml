@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: troshan96/order-service:latest
+          ports:
+            - containerPort: 8000
+          env:
+            - name: DB_HOST
+              value: order-db
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USER
+              value: root
+            - name: DB_PASSWORD
+              value: admin123
+            - name: DB_NAME
+              value: ordersdb
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+spec:
+  selector:
+    app: order-service
+  ports:
+    - port: 80
+      targetPort: 8000
