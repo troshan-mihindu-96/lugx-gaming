@@ -55,6 +55,7 @@ jobs:
 
     - name: Configure Kubeconfig
       run: |
+        mkdir -p $HOME/.kube
         echo "$KUBECONFIG_DATA" | base64 --decode > $HOME/.kube/config
 
     - name: Rolling Restart Kubernetes Deployments
