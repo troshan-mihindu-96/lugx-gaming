@@ -32,7 +32,7 @@ jobs:
     - name: Build and Push Game Service
       uses: docker/build-push-action@v5
       with:
-        context: ./game-service
+        context: ${{ github.workspace }}/game-service
         push: true
         tags: ${{ env.DOCKERHUB_USERNAME }}/game-service:latest
 
