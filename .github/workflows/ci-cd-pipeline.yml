@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main  # Trigger pipeline when changes are pushed to the 'main' branch
+  pull_request:
+    branches:
+      - main  # Also trigger pipeline for PRs targeting the 'main' branch
+
+jobs:
+  build_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Step 1: Checkout the code from the repository
+    - name: Checkout Code
+      uses: actions/checkout@v2
+
+    # Step 2: Set up AWS credentials using the secrets stored in GitHub
+    - name: Set up AWS CLI
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    # Step 3: Set up Docker Buildx for building images
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+
+    # Step 4: Log in to Amazon ECR to push images
+    - name: Log in to Amazon ECR
+      uses: aws-actions/amazon-ecr-login@v1
+
+    # Step 5: Build and push Docker images to ECR
+    - name: Build and Push Docker images to ECR
+      run: |
+        docker build -t ${{ secrets.ECR_LUGX_FRONTEND_URI }}:latest ./lugx-frontend
+        docker build -t ${{ secrets.ECR_ORDER_SERVICE_URI }}:latest ./order-service
+        docker build -t ${{ secrets.ECR_GAME_SERVICE_URI }}:latest ./game-service
+        docker build -t ${{ secrets.ECR_ANALYTICS_SERVICE_URI }}:latest ./analytics-service
+
+        docker push ${{ secrets.ECR_LUGX_FRONTEND_URI }}:latest
+        docker push ${{ secrets.ECR_ORDER_SERVICE_URI }}:latest
+        docker push ${{ secrets.ECR_GAME_SERVICE_URI }}:latest
+        docker push ${{ secrets.ECR_ANALYTICS_SERVICE_URI }}:latest
+
+    # Step 6: Set up kubectl to interact with EKS
+    - name: Set up kubectl
+      uses: aws-actions/eks-kubectl-action@v1
+      with:
+        cluster-name: lugx-gaming-cluster
+        region: us-east-1
+
+    # Step 7: Deploy the services to EKS using kubectl
+    - name: Deploy to EKS with kubectl
+      run: |
+        kubectl apply -f ./lugx-frontend/ingress.yaml
+        kubectl apply -f ./order-service/order-service-deployment.yaml
+        kubectl apply -f ./game-service/game-service-deployment.yaml
+        kubectl apply -f ./analytics-service/analytics-service-deployment.yaml
