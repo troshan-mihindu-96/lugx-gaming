@@ -56,5 +56,8 @@ jobs:
       run: |
         kubectl apply -f ./lugx-frontend/ingress.yaml
         kubectl apply -f ./order-service/order-service-deployment.yaml
+        kubectl apply -f ./order-service/order-service.yaml
         kubectl apply -f ./game-service/game-service-deployment.yaml
+        kubectl apply -f ./game-service/game-service.yaml
         kubectl apply -f ./analytics-service/analytics-service-deployment.yaml
+        kubectl apply -f ./analytics-service/analytics-service.yaml
