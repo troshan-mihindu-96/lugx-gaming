@@ -48,10 +48,8 @@ jobs:
 
     # Step 6: Set up kubectl to interact with EKS
     - name: Set up kubectl
-      uses: aws-actions/eks-kubectl-action@v4
-      with:
-        cluster-name: lug-cls
-        region: us-east-1
+      run: |
+        aws eks update-kubeconfig --name lug-cls --region us-east-1
 
     # Step 7: Deploy the services to EKS using kubectl
     - name: Deploy to EKS with kubectl
