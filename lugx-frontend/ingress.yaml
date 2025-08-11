@@ -1,0 +1,46 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: lugx-ingress
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    kubernetes.io/ingress.class: alb
+    # No rewrite annotations are needed here if you are simply routing traffic.
+    # The IngressClass 'alb' handles the path-based routing for you.
+spec:
+  ingressClassName: alb
+  rules:
+    - http:
+        paths:
+          # The ALB will route requests with the /api/games prefix to the game-service.
+          - path: /api/games
+            pathType: Prefix
+            backend:
+              service:
+                name: game-service
+                port:
+                  number: 80
+          # The ALB will route requests with the /api/orders prefix to the order-service.
+          - path: /api/orders
+            pathType: Prefix
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 8000
+          # The ALB will route all other requests (the root path) to the frontend service.
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: lugx-frontend-service
+                port:
+                  number: 80
+          # The ALB will route requests with the /api/analytics prefix to the analytics-service.
+          - path: /api/analytics
+            pathType: Prefix
+            backend:
+              service:
+                name: analytics-service
+                port:
+                  number: 80

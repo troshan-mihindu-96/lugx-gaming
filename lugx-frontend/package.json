@@ -1,0 +1,12 @@
+{
+  "name": "lugx-frontend",
+  "version": "1.0.0",
+  "description": "A frontend for a gaming shop",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "lockfileVersion": 3,
+  "requires": true,
+  "packages": {}
+}
