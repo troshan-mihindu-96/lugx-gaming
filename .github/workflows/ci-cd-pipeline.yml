@@ -70,10 +70,3 @@ jobs:
       kubectl rollout restart deploy/order-service -n default
       kubectl rollout restart deploy/game-service -n default
       kubectl rollout restart deploy/analytics-service -n default
-
-- name: Wait for rollouts
-  run: |
-    kubectl rollout status deploy/lugx-frontend -n default
-    kubectl rollout status deploy/order-service -n default
-    kubectl rollout status deploy/game-service -n default
-    kubectl rollout status deploy/analytics-service -n default
