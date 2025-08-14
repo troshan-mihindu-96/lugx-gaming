@@ -62,3 +62,18 @@ jobs:
         kubectl apply -f ./game-service/game-service.yaml
         kubectl apply -f ./analytics-service/analytics-service-deployment.yaml
         kubectl apply -f ./analytics-service/analytics-service.yaml
+
+   # Step 8: Force pods to restart so they pull :latest
+   - name: Force rollout (latest)
+     run: |
+      kubectl rollout restart deploy/lugx-frontend -n default
+      kubectl rollout restart deploy/order-service -n default
+      kubectl rollout restart deploy/game-service -n default
+      kubectl rollout restart deploy/analytics-service -n default
+
+- name: Wait for rollouts
+  run: |
+    kubectl rollout status deploy/lugx-frontend -n default
+    kubectl rollout status deploy/order-service -n default
+    kubectl rollout status deploy/game-service -n default
+    kubectl rollout status deploy/analytics-service -n default
