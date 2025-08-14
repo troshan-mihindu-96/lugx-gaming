@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: lugx-frontend
-          image: troshan96/lugx-frontend:latest
+          image: 183171473728.dkr.ecr.us-east-1.amazonaws.com/lugx-frontend:latest
           imagePullPolicy: Always
           ports:
             - containerPort: 80
@@ -31,3 +31,4 @@ spec:
     - port: 80
       targetPort: 80
       nodePort: 30000
+
